@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "485115546291",
+    "project_id": "urban-greenspace-enhancement",
+    "storage_bucket": "urban-greenspace-enhancement.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485115546291:android:fa9ceb4455d16776f87ec6",
+        "android_client_info": {
+          "package_name": "com.example.urban_green_space_enhancement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANI-GJQKfU4yHv5V4H1fAkUjeEmOvELCc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
