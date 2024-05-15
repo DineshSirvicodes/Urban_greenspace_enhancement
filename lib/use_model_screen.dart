@@ -52,6 +52,7 @@ class _UseModelSelectionScreenState extends State<UseModelSelectionScreen> {
       var parsedData = jsonDecode(data);
       base64Image = parsedData["output"];
       log(parsedData["output"]);
+
       predictedImage = Image.memory(
         base64Decode(((parsedData["output"]))),
         fit: BoxFit.fitWidth,
