@@ -20,7 +20,9 @@ class _UseModelSelectionScreenState extends State<UseModelSelectionScreen> {
   bool outputReceived = false;
   bool reqSent = false;
   String? predictedImageUrl;
-Image? predictedImage;
+  Image? predictedImage;
+  String? base64Image;
+
   postData() async {
     setState(() {
       reqSent = true;
@@ -42,14 +44,18 @@ Image? predictedImage;
         Uri.parse(
             'https://segmentation-model.onrender.com/upload-image/?files'));
     request.files.add(await http.MultipartFile.fromPath('files', _image!.path));
-
+    request.headers["ngrok-skip-browser-warning"]="69420";
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       var data = await response.stream.bytesToString();
       var parsedData = jsonDecode(data);
-      predictedImage =
-          Image.memory(base64Decode(parsedData["output"]),fit: BoxFit.fitWidth,);
+      base64Image = parsedData["output"];
+      log(parsedData["output"]);
+      predictedImage = Image.memory(
+        base64Decode(((parsedData["output"]))),
+        fit: BoxFit.fitWidth,
+      );
     } else {
       Fluttertoast.showToast(
           msg: "${response.statusCode} Error: ${response.reasonPhrase}",
@@ -58,9 +64,7 @@ Image? predictedImage;
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
-
+          fontSize: 16.0);
     }
     Navigator.pop(context);
     setState(() {
@@ -85,8 +89,8 @@ Image? predictedImage;
         body: Center(
           child: (predictedImage == null)
               ? Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       if (_image == null)
@@ -107,7 +111,7 @@ Image? predictedImage;
                                     fontFamily: "MadimiOne"),
                               ),
                               ElevatedButton(
-                                onPressed: ()async {
+                                onPressed: () async {
                                   _pickImage();
                                 },
                                 child: Text("Select Image",
@@ -123,7 +127,9 @@ Image? predictedImage;
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(15)),
-                            child: Image.file(_image!, ),
+                            child: Image.file(
+                              _image!,
+                            ),
                           ),
                         ),
                       if (!reqSent)
@@ -164,10 +170,10 @@ Image? predictedImage;
                         ),
                     ],
                   ),
-              )
+                )
               : Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
@@ -175,7 +181,11 @@ Image? predictedImage;
                           decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.5),
                               borderRadius: BorderRadius.circular(15)),
-                          child: predictedImage,
+                          child: Image.memory(
+                            base64Decode(base64Image!),
+                            fit: BoxFit.fitWidth
+                            ,
+                          ),
                         ),
                       ),
                       if (predictedImage != null)
@@ -186,11 +196,11 @@ Image? predictedImage;
                                 _image = null;
                               });
                             },
-                            child:
-                                Text("Want to Classification Something Else??")),
+                            child: Text(
+                                "Want to Classification Something Else??")),
                     ],
                   ),
-              ),
+                ),
         ),
       ),
     );
@@ -198,7 +208,7 @@ Image? predictedImage;
 
   File? _image;
 
-   _pickImage() async {
+  _pickImage() async {
     final picker = ImagePicker.platform;
     _image = null;
     var fileselected = await (picker.getImage(source: ImageSource.gallery));
